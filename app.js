@@ -9,6 +9,7 @@ const app = express();
 
 app.use(express.json());
 
+//define routes 
 const registerRoute = require("./routes/Register");
 const userRoute = require("./routes/Users"); 
 
@@ -50,6 +51,5 @@ app.post("/login", async (req,res)=>{
         console.log(error);
     }
 });
-
 
 module.exports = app;
