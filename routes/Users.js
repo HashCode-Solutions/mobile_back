@@ -32,4 +32,32 @@ router.put("/update-user/:id", auth, async (req, res) => {
   }
 });
 
+//user forget password end-point
+router.put("/forget-password/:email", async (req, res) => {
+  try {
+    
+    let query = {email: req.params.email};
+    //check user is already exists
+    const oldUser = await User.findOne(query);
+
+    if (oldUser) {
+      //encrypt user password
+      encryptPassword = await bcrypt.hash(req.body.password,10);
+
+      // update user's password property in the database
+      const updatedUser = await User.findOneAndUpdate(query, { password: encryptPassword }, { new: true });
+      
+      res.status(200).send(updatedUser);
+    }
+
+    res.status(400).send("Can't find user. Please Register!!!");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Server error");
+  }
+
+});
+
+
+
 module.exports = router;
