@@ -7,6 +7,8 @@ const User = require("../model/user");
 const bcrypt = require("bcryptjs");
 const app = express();
 
+const CustomObject = require('../dto/CustomObject');
+
 app.use(express.json());
 
 //get user details
@@ -34,8 +36,9 @@ router.put("/update-user/:id", auth, async (req, res) => {
 
 //user forget password end-point
 router.put("/forget-password/:email", async (req, res) => {
+  let customObject = new CustomObject("");
   try {
-    
+  
     let query = {email: req.params.email};
     //check user is already exists
     const oldUser = await User.findOne(query);
@@ -47,13 +50,14 @@ router.put("/forget-password/:email", async (req, res) => {
       // update user's password property in the database
       const updatedUser = await User.findOneAndUpdate(query, { password: encryptPassword }, { new: true });
       
-      res.status(200).send(updatedUser);
+      res.status(200).json(updatedUser);
     }
 
-    res.status(400).send("Can't find user. Please Register!!!");
+    res.status(400).json(customObject);
   } catch (error) {
     console.log(error);
-    res.status(500).send("Server error");
+    customObject.Message = "Server error"; 
+    res.status(500).json(customObject);
   }
 
 });
