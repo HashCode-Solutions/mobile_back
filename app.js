@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("./model/user");
 
+const CustomObject = require("./dto/CustomObject");
+
 const app = express();
 
 app.use(express.json());
@@ -20,6 +22,7 @@ app.use("/project-creation",projectCreationRoute);
 
 //login
 app.post("/login", async (req,res)=>{
+    let customObject = new CustomObject("");
     //register login here
     try {
         //get user input
@@ -27,7 +30,8 @@ app.post("/login", async (req,res)=>{
 
         //validate user input
         if (!(email && password)) {
-            res.status(400).send("All input are required");
+            customObject.Message = "All input are required"; 
+            res.status(400).json(customObject);
         }
 
         //validate if user exist in our database
@@ -48,7 +52,8 @@ app.post("/login", async (req,res)=>{
             res.status(200).json(user);
         }
 
-        res.status(400).send("Invalid Credentials");
+        customObject.Message = "Invalid Credentials"; 
+        res.status(400).json(customObject);
     } catch (error) {
         console.log(error);
     }

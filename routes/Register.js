@@ -6,19 +6,23 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 
+const CustomObject = require('../dto/CustomObject');
+
 const app = express();
 
 app.use(express.json());
 
 //register
 router.post("/", async (req,res) => {
+    let customObject = new CustomObject("");
     //register login here
     try {
         const { first_name, last_name, mobile_number, email, password } = req.body;
 
         //validate user input
         if(!(email && password && first_name && last_name && mobile_number)){
-            res.status(400).send("All inputs are required");
+            customObject.Message = "All inputs are required"; 
+            res.status(400).json(customObject);
         }
 
         //check user is already exists
@@ -26,7 +30,8 @@ router.post("/", async (req,res) => {
         const oldUser = await User.findOne({email});
 
         if(oldUser){
-            return res.status(400).send("User Already Exist. Please Login");
+            customObject.Message = "User Already Exist. Please Login";
+            return res.status(400).json(customObject);
         }
 
         //encrypt user password
