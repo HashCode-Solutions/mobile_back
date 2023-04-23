@@ -15,12 +15,15 @@ app.use(express.json());
 const registerRoute = require("./routes/Register");
 const userRoute = require("./routes/Users");
 const projectCreationRoute = require("./routes/Projects");
-const marketPriceRoute = require("./routes/MarketPrice"); 
+const marketPriceRoute = require("./routes/MarketPrice");
+const userAchievementseRoute = require("./routes/UserAchievements"); 
 
 app.use("/register", registerRoute);
 app.use("/user", userRoute);
 app.use("/project-creation",projectCreationRoute);
-app.use("/market-price",marketPriceRoute);
+app.use("/market-price",marketPriceRoute); 
+app.use("/achievements",userAchievementseRoute);
+
 
 //login
 app.post("/login", async (req,res)=>{
