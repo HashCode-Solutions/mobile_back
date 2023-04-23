@@ -73,6 +73,4 @@ router.put("/forget-password/:email", async (req, res) => {
 
 });
 
-
-
 module.exports = router;
