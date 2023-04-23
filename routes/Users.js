@@ -5,6 +5,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const User = require("../model/user");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const app = express();
 
 const CustomObject = require('../dto/CustomObject');
@@ -28,6 +29,16 @@ router.put("/update-user/:id", auth, async (req, res) => {
       new: true,
     });
     updatedUser.password = req.body.password;
+    const updateEmail = updatedUser.email;
+    //create token
+    const token = jwt.sign(
+      { user_id: updatedUser._id, updateEmail },
+      process.env.TOKEN_KEY,
+      { expiresIn: "2h" },
+    );
+
+    //save user token
+    updatedUser.token = token;
     res.json(updatedUser);
   } catch (error) {
     console.log(error);
@@ -38,25 +49,25 @@ router.put("/update-user/:id", auth, async (req, res) => {
 router.put("/forget-password/:email", async (req, res) => {
   let customObject = new CustomObject("");
   try {
-  
-    let query = {email: req.params.email};
+
+    let query = { email: req.params.email };
     //check user is already exists
     const oldUser = await User.findOne(query);
 
     if (oldUser) {
       //encrypt user password
-      encryptPassword = await bcrypt.hash(req.body.password,10);
+      encryptPassword = await bcrypt.hash(req.body.password, 10);
 
       // update user's password property in the database
       const updatedUser = await User.findOneAndUpdate(query, { password: encryptPassword }, { new: true });
-      
+
       res.status(200).json(updatedUser);
     }
 
     res.status(400).json(customObject);
   } catch (error) {
     console.log(error);
-    customObject.Message = "Server error"; 
+    customObject.Message = "Server error";
     res.status(500).json(customObject);
   }
 
