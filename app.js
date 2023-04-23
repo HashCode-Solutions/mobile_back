@@ -14,11 +14,13 @@ app.use(express.json());
 //define routes 
 const registerRoute = require("./routes/Register");
 const userRoute = require("./routes/Users");
-const projectCreationRoute = require("./routes/Projects"); 
+const projectCreationRoute = require("./routes/Projects");
+const marketPriceRoute = require("./routes/MarketPrice"); 
 
 app.use("/register", registerRoute);
 app.use("/user", userRoute);
 app.use("/project-creation",projectCreationRoute);
+app.use("/market-price",marketPriceRoute);
 
 //login
 app.post("/login", async (req,res)=>{
